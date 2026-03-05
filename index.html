@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Art Gallery Website</title>
+<style>
+    /* General styles */
+    body, html {
+        margin: 0;
+        padding: 0;
+        font-family: 'Arial', sans-serif;
+        scroll-behavior: smooth;
+    }
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
+    nav {
+        display: flex;
+        justify-content: center;
+        background-color: rgba(106,17,203,0.9);
+        padding: 15px;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        gap: 20px;
+    }
+    nav a, #cartButton {
+        color: white;
+        font-weight: bold;
+        font-size: 18px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    nav a:hover, #cartButton:hover {
+        color: #ffdd59;
+    }
+
+    /* Login page */
+    #loginPage {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background: linear-gradient(120deg, #ff8080,#ff4da6);
+        color: white;
+        flex-direction: column;
+    }
+    #loginPage input {
+        padding: 10px;
+        margin: 10px;
+        border: none;
+        border-radius: 5px;
+        width: 250px;
+    }
+    #loginPage button {
+        padding: 10px 20px;
+        margin-top: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #ffdd59;
+        cursor: pointer;
+        font-weight: bold;
+    }
+    #loginPage button:hover {
+        background-color: #ffc107;
+    }
+
+    /* Homepage */
+    #homePage {
+        display: none;
+        height: 100vh;
+        background: url('https://i.postimg.cc/zvcK8Zsh/Screenshot-2025-12-09-021216.png') no-repeat center center/cover;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        flex-direction: column;
+    }
+    #homePage h1 {
+        font-size: 50px;
+        background-color: rgba(0,0,0,0.55);
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    /* Shop Page */
+    #shopPage {
+        display: none;
+        padding: 50px;
+        background-color: #ffa366;
+        text-align: center;
+    }
+    .painting-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 30px;
+    }
+    .painting {
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 20px;
+        background-color: white;
+        width: 250px;
+        transition: 0.3s;
+    }
+    .painting img {
+        width: 100%;
+        border-radius: 10px;
+    }
+    .painting h3 {
+        margin: 10px 0 5px;
+    }
+    .painting p {
+        margin: 5px 0;
+        font-weight: bold;
+    }
+    .painting button {
+        padding: 10px;
+        margin-top: 5px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        background-color: #6a11cb;
+        color: white;
+        font-weight: bold;
+    }
+    .painting button:hover {
+        background-color: #2575fc;
+    }
+
+    /* About Page */
+    #aboutPage {
+        display: none;
+        min-height: 100vh;
+        padding: 50px;
+        background: linear-gradient(to right,#ff66b3,#ffa366);
+        text-align: center;
+        color: #333;
+    }
+    #aboutPage h2 {
+        font-size: 40px;
+        margin-bottom: 20px;
+    }
+    #aboutPage p {
+        max-width: 800px;
+        margin: 0 auto;
+        font-size: 20px;
+        line-height: 1.6;
+    }
+
+    /* Contact Page */
+    #contactPage {
+        display: none;
+        min-height: 100vh;
+        background: url('https://i.postimg.cc/CxP12sV1/Screenshot-2025-12-09-011425.png') no-repeat center center/cover;
+        color: white;
+        text-align: center;
+        padding: 50px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    #contactPage h2 {
+        font-size: 40px;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 5px black;
+    }
+    #contactPage p {
+        font-size: 22px;
+        text-shadow: 1px 1px 4px black;
+    }
+
+    /* User Details Form */
+    #userDetailsForm {
+        margin-top: 30px;
+        max-width: 400px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    #userDetailsForm input,
+    #userDetailsForm textarea {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+        border: none;
+    }
+    #userDetailsForm button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        background-color: #6a11cb;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    #userDetailsForm button:hover {
+        background-color: #2575fc;
+    }
+
+    /* Cart Dropdown */
+    #cartDropdown {
+        display: none;
+        position: absolute;
+        top: 60px;
+        right: 20px;
+        background-color: white;
+        color: #333;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        width: 300px;
+        max-height: 500px;
+        overflow-y: auto;
+        padding: 20px;
+        z-index: 200;
+        box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+    }
+</style>
+</head>
+<body>
+
+<!-- Login Page -->
+<div id="loginPage">
+    <h1>Welcome to My Art Gallery</h1>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+</div>
+
+<!-- Navigation -->
+<nav id="navBar" style="display:none;">
+    <a href="#homePage" onclick="showPage('homePage')">Home</a>
+    <a href="#shopPage" onclick="showPage('shopPage')">Shop</a>
+    <a href="#aboutPage" onclick="showPage('aboutPage')">About</a>
+    <a href="#contactPage" onclick="showPage('contactPage')">Contact</a>
+    <span id="cartButton" onclick="toggleCart()">Cart ($0)</span>
+</nav>
+
+<!-- Cart Dropdown -->
+<div id="cartDropdown">
+    <h3>Your Cart</h3>
+    <ul id="cartItems"></ul>
+    <p id="cartTotalText">Total: $0</p>
+    <button onclick="checkout()">Checkout</button>
+
+    <!-- Payment Section -->
+    <div id="paymentSection" style="display:none; margin-top:15px;">
+        <h4>Payment Method</h4>
+        <label>Choose Method:</label>
+        <select id="paymentMethod" style="width:100%; padding:5px;">
+            <option value="upi">UPI</option>
+            <option value="card">Card</option>
+        </select>
+        <div id="upiInput" style="margin-top:10px;">
+            <input type="text" id="upiId" placeholder="Enter UPI ID" style="width:100%; padding:5px;">
+        </div>
+        <div id="cardInput" style="margin-top:10px; display:none;">
+            <input type="text" id="cardNumber" placeholder="Card Number" style="width:100%; padding:5px; margin-bottom:5px;">
+            <input type="text" id="cardName" placeholder="Card Holder Name" style="width:100%; padding:5px; margin-bottom:5px;">
+            <input type="text" id="cardExpiry" placeholder="MM/YY" style="width:48%; padding:5px; margin-right:4%;">
+            <input type="text" id="cardCVV" placeholder="CVV" style="width:48%; padding:5px;">
+        </div>
+        <button onclick="processPayment()">Pay $<span id="paymentAmount">0</span></button>
+    </div>
+</div>
+
+<!-- Homepage -->
+<div id="homePage">
+    <h1>Explore the World of Paintings and Art</h1>
+</div>
+
+<!-- Shop Page -->
+<div id="shopPage">
+    <h2>Our Collection</h2>
+    <div class="painting-container">
+        <div class="painting">
+            <img src="https://i.postimg.cc/Qx8Ngckg/realistic-bird-1.png" alt="Painting1">
+            <h3>A Realistic Bird</h3>
+            <p>Rs 1000</p>
+            <button onclick="addToCart('A Realistic Bird', 1000)">Add to Cart</button>
+        </div>
+        <div class="painting">
+            <img src="https://i.postimg.cc/K8sspyXM/Bird-2.jpg" alt="Painting2">
+            <h3>A Beautiful Bird</h3>
+            <p>Rs 1000</p>
+            <button onclick="addToCart('A Beautiful bird', 1000)">Add to Cart</button>
+        </div>
+        <div class="painting">
+            <img src="https://i.postimg.cc/8sgT6r4V/IMG-20250731-WA0007.jpg" alt="Painting3">
+            <h3>A Sunset Bliss</h3>
+            <p>Rs 1000</p>
+            <button onclick="addToCart('A Sunset Bliss', 1000)">Add to Cart</button>
+        </div>
+        <div class="painting">
+            <img src="https://i.postimg.cc/zv09JbQh/IMG-20250731-WA0013.jpg" alt="Painting4">
+            <h3>Scenery</h3>
+            <p>Rs 1000</p>
+            <button onclick="addToCart('Scenery', 1000)">Add to Cart</button>
+        </div>
+        <div class="painting">
+            <img src="https://i.postimg.cc/CMQ7VsrT/IMG-20250731-WA0004.jpg" alt="Painting5">
+            <h3>A Childhood Memory</h3>
+            <p>Rs 1000</p>
+            <button onclick="addToCart('A Childhood Memory', 1000)">Add to Cart</button>
+        </div>
+    </div>
+</div>
+
+<!-- About Page -->
+<div id="aboutPage">
+    <h2>About Our Art</h2>
+    <p>
+        Welcome to our art gallery! Step into a world where life and reality meets paints and brushes.
+        This is a website with various intricate drawings and creative doodles. Each piece is crafted with passion,
+        reflecting imagination and emotion.
+        Our mission is to bring artistic inspiration into every home.
+        "REMEMBER EVERY ART YOU CHOOSE BRINGS IMMENSE JOY TO YOU”.
+    </p>
+</div>
+
+<!-- Contact Page -->
+<div id="contactPage">
+    <h2>Contact Us</h2>
+    <p>Name: Kinthan.K.Raja</p>
+    <p>Email: artgallery@example.com</p>
+    <p>Phone: +123 456 7890</p>
+    <p>Address: 123 Art Street, Creativity City</p>
+
+    <!-- User Details Form -->
+    <form id="userDetailsForm" onsubmit="event.preventDefault(); submitUserDetails();">
+        <center><input type="text" id="userName" placeholder="Enter your name" required></center>
+        <center><input type="email" id="userEmail" placeholder="Enter your email" required></center>
+        <center><input type="text" id="userPhone" placeholder="Enter your phone number" required></center>
+       <center> <textarea id="userMessage" placeholder="Enter your message" required></textarea></center>
+        <button type="submit">Submit</button>
+    </form>
+</div>
+
+<script>
+    let cartTotal = 0;
+    let cartItemsList = [];
+
+    function login() {
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value.trim();
+
+        const validUsername = "kinthan";
+        const validPassword = "Kinthan_2006";
+
+        if(username === "" || password === "") {
+            alert("Please fill in both Username and Password.");
+            return;
+        }
+
+        if(username === validUsername && password === validPassword) {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('navBar').style.display = 'flex';
+            showPage('homePage');
+        } else {
+            alert("Invalid username or password. Try again!");
+        }
+    }
+
+    function showPage(pageId) {
+        const pages = ['homePage', 'shopPage', 'aboutPage', 'contactPage'];
+        pages.forEach(id => {
+            document.getElementById(id).style.display = (id === pageId) ? 'block' : 'none';
+        });
+    }
+
+    function addToCart(name, price) {
+        cartTotal += price;
+        cartItemsList.push({name, price});
+        updateCart();
+        alert(name + " added to cart!");
+    }
+
+    function updateCart() {
+        document.getElementById('cartButton').innerText = `Cart ($${cartTotal})`;
+        const cartItemsEl = document.getElementById('cartItems');
+        cartItemsEl.innerHTML = '';
+        cartItemsList.forEach(item => {
+            const li = document.createElement('li');
+            li.innerText = `${item.name} - $${item.price}`;
+            cartItemsEl.appendChild(li);
+        });
+        document.getElementById('cartTotalText').innerText = `Total: $${cartTotal}`;
+        document.getElementById('paymentAmount').innerText = cartTotal;
+    }
+
+    function toggleCart() {
+        const cartDropdown = document.getElementById('cartDropdown');
+        cartDropdown.style.display = cartDropdown.style.display === 'block' ? 'none' : 'block';
+        document.getElementById('paymentAmount').innerText = cartTotal;
+    }
+
+    function checkout() {
+        if(cartTotal === 0) {
+            alert("Your cart is empty!");
+        } else {
+            document.getElementById('paymentSection').style.display = 'block';
+        }
+    }
+
+    document.getElementById('paymentMethod').addEventListener('change', function() {
+        if(this.value === 'upi') {
+            document.getElementById('upiInput').style.display = 'block';
+            document.getElementById('cardInput').style.display = 'none';
+        } else {
+            document.getElementById('upiInput').style.display = 'none';
+            document.getElementById('cardInput').style.display = 'block';
+        }
+    });
+
+    function processPayment() {
+        const method = document.getElementById('paymentMethod').value;
+        let valid = false;
+
+        if(method === 'upi') {
+            const upi = document.getElementById('upiId').value.trim();
+            if(upi) valid = true;
+        } else {
+            const cardNum = document.getElementById('cardNumber').value.trim();
+            const cardName = document.getElementById('cardName').value.trim();
+            const cardExp = document.getElementById('cardExpiry').value.trim();
+            const cardCVV = document.getElementById('cardCVV').value.trim();
+            if(cardNum && cardName && cardExp && cardCVV) valid = true;
+        }
+
+        if(valid) {
+            alert(`Payment of $${cartTotal} successful via ${method.toUpperCase()}!`);
+            cartTotal = 0;
+            cartItemsList = [];
+            updateCart();
+            document.getElementById('paymentSection').style.display = 'none';
+            document.getElementById('cartDropdown').style.display = 'none';
+        } else {
+            alert("Please fill in all payment details.");
+        }
+    }
+
+    window.addEventListener('click', function(e) {
+        const cartDropdown = document.getElementById('cartDropdown');
+        const cartButton = document.getElementById('cartButton');
+        if (!cartDropdown.contains(e.target) && e.target !== cartButton) {
+            cartDropdown.style.display = 'none';
+        }
+    });
+
+    // Function to handle user details form submission
+    function submitUserDetails() {
+        const name = document.getElementById('userName').value.trim();
+        const email = document.getElementById('userEmail').value.trim();
+        const phone = document.getElementById('userPhone').value.trim();
+        const message = document.getElementById('userMessage').value.trim();
+
+        if(name && email && phone && message) {
+            alert(`Thank you, ${name}! Your message has been submitted.`);
+            document.getElementById('userDetailsForm').reset();
+        } else {
+            alert("Please fill in all fields.");
+        }
+    }
+</script>
+
+</body>
+</html>
